@@ -1,16 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
-  turbopack: {
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
-      },
-    },
+  // cacheComponents désactivé : l'app est entièrement dynamique (session par cookies).
+  cacheComponents: false,
+  experimental: {
+    // Upload d'avatar (2 Mo max côté application) via Server Action
+    serverActions: { bodySizeLimit: "3mb" },
   },
 };
 
