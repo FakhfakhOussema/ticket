@@ -39,13 +39,15 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  /* Un seul rayon de bordure dans tout le système : 5 px (modifier --radius suffit pour le changer). */
+  --radius-xs: var(--radius);
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+  --radius-3xl: var(--radius);
+  --radius-4xl: var(--radius);
 }
 
 /* Design system Pilotis Ticket : indigo (#4F46E5) + neutres slate */
@@ -73,7 +75,7 @@
   --chart-3: oklch(0.696 0.17 162.48);
   --chart-4: oklch(0.769 0.188 70.08);
   --chart-5: oklch(0.645 0.246 16.439);
-  --radius: 0.75rem;
+  --radius: 5px;
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.279 0.041 260.031);
   --sidebar-primary: oklch(0.511 0.262 276.966);

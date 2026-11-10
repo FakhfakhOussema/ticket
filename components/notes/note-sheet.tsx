@@ -131,7 +131,7 @@ function NoteForm({
                   title={NOTE_COLOR_LABELS[c]}
                   onClick={() => setColor(c)}
                   className={cn(
-                    "ring-offset-background focus-visible:ring-ring flex size-8 items-center justify-center rounded-full ring-offset-2 transition outline-none focus-visible:ring-2",
+                    "ring-offset-background focus-visible:ring-ring flex size-8 items-center justify-center rounded-md ring-offset-2 transition outline-none focus-visible:ring-2",
                     NOTE_COLOR_STYLES[c].swatch,
                     color === c ? "ring-foreground/70 ring-2" : "hover:scale-110",
                   )}

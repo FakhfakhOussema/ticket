@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { GoogleButton, OrDivider } from "@/components/auth/google-button";
 import { RegisterForm } from "@/components/auth/register-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { safeNext } from "@/lib/safe-redirect";
@@ -23,6 +24,8 @@ export default async function RegisterPage({
         <CardDescription>Quelques secondes pour démarrer.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
+        <GoogleButton next={next} />
+        <OrDivider />
         <RegisterForm next={next} />
         <p className="text-muted-foreground text-center text-sm">
           Déjà inscrit ?{" "}

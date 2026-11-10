@@ -82,7 +82,7 @@ export function StatusBarChart({ rows }: { rows: ChartRow[] }) {
                     fill={STATUS_STYLES[s].chart}
                     stroke="var(--card)"
                     strokeWidth={2}
-                    radius={i === TICKET_STATUSES.length - 1 ? [0, 4, 4, 0] : 0}
+                    radius={i === TICKET_STATUSES.length - 1 ? [0, 5, 5, 0] : 0}
                     isAnimationActive={false}
                     maxBarSize={22}
                   />

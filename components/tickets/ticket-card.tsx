@@ -27,7 +27,7 @@ export function TicketCard({ ticket, projectId, overlay, onAssignSelf }: Props) 
       <Link
         href={`/projets/${projectId}/tickets/${ticket.id}`}
         draggable={false}
-        className="hover:text-primary focus-visible:ring-ring line-clamp-2 rounded font-medium outline-none focus-visible:ring-2"
+        className="hover:text-primary focus-visible:ring-ring line-clamp-2 rounded-md font-medium outline-none focus-visible:ring-2"
       >
         {ticket.title}
       </Link>
@@ -58,7 +58,7 @@ export function TicketCard({ ticket, projectId, overlay, onAssignSelf }: Props) 
             onClick={onAssignSelf}
             onPointerDown={(e) => e.stopPropagation()}
             onKeyDown={(e) => e.stopPropagation()}
-            className="text-muted-foreground hover:border-primary hover:text-primary focus-visible:ring-ring inline-flex items-center gap-1 rounded-full border border-dashed px-2 py-0.5 text-xs font-medium transition-colors outline-none focus-visible:ring-2"
+            className="text-muted-foreground hover:border-primary hover:text-primary focus-visible:ring-ring inline-flex items-center gap-1 rounded-md border border-dashed px-2 py-0.5 text-xs font-medium transition-colors outline-none focus-visible:ring-2"
           >
             <UserPlus className="size-3" aria-hidden /> M&apos;assigner
           </button>

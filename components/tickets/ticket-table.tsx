@@ -41,7 +41,7 @@ function SortHead({ label, k, sort, onToggle, className }: { label: string; k: S
       <button
         type="button"
         onClick={() => onToggle(k)}
-        className={cn("hover:text-foreground focus-visible:ring-ring -mx-1 flex items-center gap-1 rounded px-1 outline-none focus-visible:ring-2", active && "text-foreground")}
+        className={cn("hover:text-foreground focus-visible:ring-ring -mx-1 flex items-center gap-1 rounded-md px-1 outline-none focus-visible:ring-2", active && "text-foreground")}
       >
         {label}
         <Icon className={cn("size-3.5", !active && "opacity-50")} aria-hidden />
@@ -99,7 +99,7 @@ export function TicketTable({ tickets, projectId, onEdit, onDelete, onAssignSelf
             return (
               <TableRow key={t.id}>
                 <TableCell className="max-w-80 font-medium">
-                  <Link href={`/projets/${projectId}/tickets/${t.id}`} className="hover:text-primary block truncate rounded outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <Link href={`/projets/${projectId}/tickets/${t.id}`} className="hover:text-primary block truncate rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     {t.title}
                   </Link>
                 </TableCell>
@@ -117,7 +117,7 @@ export function TicketTable({ tickets, projectId, onEdit, onDelete, onAssignSelf
                       <button
                         type="button"
                         onClick={() => onAssignSelf(t)}
-                        className="text-primary hover:bg-primary/10 focus-visible:ring-ring rounded px-1.5 py-0.5 text-xs font-medium whitespace-nowrap outline-none focus-visible:ring-2"
+                        className="text-primary hover:bg-primary/10 focus-visible:ring-ring rounded-md px-1.5 py-0.5 text-xs font-medium whitespace-nowrap outline-none focus-visible:ring-2"
                       >
                         M&apos;assigner
                       </button>

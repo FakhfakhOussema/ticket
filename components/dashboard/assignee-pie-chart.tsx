@@ -14,7 +14,7 @@ function PieTooltip({ active, payload }: { active?: boolean; payload?: Array<{ p
   return (
     <div className="bg-popover text-popover-foreground rounded-lg border px-3 py-2 text-xs shadow-md">
       <div className="flex items-center gap-2 font-medium">
-        <span className="size-2.5 rounded-full" style={{ backgroundColor: row.color }} aria-hidden />
+        <span className="size-2.5 rounded-md" style={{ backgroundColor: row.color }} aria-hidden />
         {row.name}
       </div>
       <p className="text-muted-foreground mt-1 tabular-nums">
@@ -71,7 +71,7 @@ export function AssigneePieChart({ rows, total }: { rows: ChartRow[]; total: num
           <ul className="grid w-full min-w-0 flex-1 gap-2">
             {rows.map((r) => (
               <li key={r.key} className="flex items-center gap-2.5 text-sm">
-                <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: r.color }} aria-hidden />
+                <span className="size-2.5 shrink-0 rounded-md" style={{ backgroundColor: r.color }} aria-hidden />
                 {r.avatar ? <UserAvatar user={r.avatar} size="sm" /> : null}
                 <span className="min-w-0 flex-1 truncate">{r.name}</span>
                 <span className="text-muted-foreground tabular-nums">{r.total}</span>

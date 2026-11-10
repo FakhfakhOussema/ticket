@@ -85,7 +85,7 @@ export function NotesBoard({ projectId, initialNotes, currentUserId, isAdmin, av
           <Database className="mt-0.5 size-4 shrink-0" aria-hidden />
           <p>
             Les notes nécessitent une mise à jour de la base de données. Exécutez le fichier{" "}
-            <code className="rounded bg-black/5 px-1 dark:bg-white/10">supabase/migrations/20260101000006_notes_and_todos.sql</code> dans le SQL Editor de Supabase, puis rechargez cette page.
+            <code className="rounded-md bg-black/5 px-1 dark:bg-white/10">supabase/migrations/20260101000006_notes_and_todos.sql</code> dans le SQL Editor de Supabase, puis rechargez cette page.
           </p>
         </div>
       ) : notes.length === 0 ? (

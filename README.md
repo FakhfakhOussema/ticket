@@ -128,6 +128,20 @@ Le SMTP par défaut de Supabase est limité (quelques emails par heure, destiné
 
 Limites : environ 500 emails par jour pour un compte Gmail gratuit. Pour plus de volume, utilisez un fournisseur transactionnel (Resend, Brevo…).
 
+### Connexion avec Google
+
+Le bouton « Continuer avec Google » est présent sur les pages de connexion et d'inscription (y compris quand on arrive depuis un lien d'invitation). Il ne fonctionne qu'une fois Google activé dans Supabase ; tant que ce n'est pas fait, un message l'indique.
+
+1. **Google Cloud Console** → *APIs & Services → Credentials → Create credentials → OAuth client ID* (type **Web application**). Au préalable, configurez l'écran de consentement OAuth (*OAuth consent screen*, nom de l'application, email de support).
+2. Dans **Authorized redirect URIs**, ajoutez l'URL de callback de Supabase :
+   `https://<ref>.supabase.co/auth/v1/callback`
+   (visible dans Supabase → *Authentication → Providers → Google*, champ « Callback URL »).
+3. Copiez le **Client ID** et le **Client secret** générés.
+4. Supabase → *Authentication → Providers → **Google*** : activez le fournisseur, collez le Client ID et le Client secret, enregistrez.
+5. Vérifiez *Authentication → URL Configuration* : la **Site URL** et les **Redirect URLs** (`http://localhost:3000/**`, `https://<votre-domaine>/**`) doivent être renseignées.
+
+Fonctionnement : le compte et son profil sont créés automatiquement à la première connexion (nom et photo repris de Google). Si une adresse email existe déjà, Supabase relie le compte Google au compte existant. Une invitation de projet s'accepte avec le compte Google correspondant à l'adresse invitée.
+
 ### Realtime et Storage
 
 - **Realtime** : activé par la migration `…0005`. Aucun réglage supplémentaire.

@@ -30,13 +30,13 @@ export function UserMenu({ user, todos, projects }: Props) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         aria-label={count > 0 ? `Menu utilisateur, ${count} tâche${count > 1 ? "s" : ""} à faire` : "Menu utilisateur"}
-        className="focus-visible:ring-ring relative rounded-full outline-none focus-visible:ring-2"
+        className="focus-visible:ring-ring relative rounded-md outline-none focus-visible:ring-2"
       >
         <UserAvatar user={user} />
         {count > 0 ? (
           <span
             aria-hidden
-            className="bg-primary text-primary-foreground ring-background absolute -top-2 -right-2 flex min-w-4 items-center justify-center rounded-full px-1 text-[10px] leading-4 font-semibold ring-2"
+            className="bg-primary text-primary-foreground ring-background absolute -top-2 -right-2 flex min-w-4 items-center justify-center rounded-md px-1 text-[10px] leading-4 font-semibold ring-2"
           >
             {count > 9 ? "9+" : count}
           </span>
@@ -56,7 +56,7 @@ export function UserMenu({ user, todos, projects }: Props) {
             <h2 className="flex items-center gap-2 text-sm font-semibold">
               <ListChecks className="size-4" aria-hidden /> Ma liste de tâches
               {count > 0 ? (
-                <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium tabular-nums">{count}</span>
+                <span className="bg-muted text-muted-foreground rounded-md px-2 py-0.5 text-xs font-medium tabular-nums">{count}</span>
               ) : null}
             </h2>
             <Link href="/profil#taches" onClick={close} className="text-muted-foreground hover:text-foreground text-xs underline-offset-4 hover:underline">

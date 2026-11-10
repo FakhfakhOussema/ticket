@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import type { AuthError } from "@supabase/supabase-js";
-import { SITE_URL } from "@/lib/env";
+import { SITE_URL, SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/env";
 import { safeNext } from "@/lib/safe-redirect";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -122,4 +122,46 @@ export async function signOut(): Promise<void> {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/connexion");
+}
+
+/** Vrai si le fournisseur Google est activé dans Supabase (Authentication → Providers). */
+async function isGoogleEnabled(): Promise<boolean> {
+  try {
+    const res = await fetch(`${SUPABASE_URL()}/auth/v1/settings`, {
+      headers: { apikey: SUPABASE_ANON_KEY() },
+      cache: "no-store",
+    });
+    if (!res.ok) return false;
+    const settings = (await res.json()) as { external?: { google?: boolean } };
+    return settings.external?.google === true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * « Continuer avec Google » : démarre le flux OAuth (PKCE). Supabase redirige vers Google, puis vers
+ * /auth/callback qui échange le code contre une session et renvoie vers `next`.
+ * Le compte (et son profil) est créé automatiquement à la première connexion.
+ */
+export async function signInWithGoogle(next?: string): Promise<ActionResult> {
+  if (!(await isGoogleEnabled())) {
+    return {
+      ok: false,
+      error: "La connexion avec Google n'est pas encore activée. Activez le fournisseur Google dans Supabase (voir le README).",
+    };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${SITE_URL()}/auth/callback?next=${encodeURIComponent(safeNext(next))}`,
+      // Laisse l'utilisateur choisir son compte Google à chaque fois
+      queryParams: { prompt: "select_account" },
+    },
+  });
+  if (error || !data.url) return { ok: false, error: "Impossible de démarrer la connexion avec Google. Réessayez." };
+
+  redirect(data.url);
 }

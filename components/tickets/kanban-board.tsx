@@ -73,9 +73,9 @@ function Column({
       className="bg-muted/60 flex w-72 shrink-0 flex-col rounded-2xl p-2 xl:w-auto xl:min-w-0 xl:flex-1"
     >
       <header className="flex items-center gap-2 px-2 py-1.5">
-        <span className={cn("size-2.5 rounded-full", style.dot)} aria-hidden />
+        <span className={cn("size-2.5 rounded-md", style.dot)} aria-hidden />
         <h3 className="text-sm font-semibold">{STATUS_LABELS[status]}</h3>
-        <span className="bg-background text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium tabular-nums">{ids.length}</span>
+        <span className="bg-background text-muted-foreground rounded-md px-2 py-0.5 text-xs font-medium tabular-nums">{ids.length}</span>
         <Button variant="ghost" size="icon-sm" className="ml-auto" onClick={() => onCreate(status)} aria-label={`Ajouter un ticket « ${STATUS_LABELS[status]} »`}>
           <Plus className="size-4" />
         </Button>

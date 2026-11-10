@@ -14,7 +14,7 @@ export function MyTasks({ projectId, tickets }: { projectId: string; tickets: Ti
           <p className="text-muted-foreground text-sm">Tickets qui vous sont assignés, par échéance.</p>
         </div>
         {tickets.length > 0 ? (
-          <span className="bg-primary/10 text-primary rounded-full px-2.5 py-0.5 text-xs font-semibold tabular-nums">{tickets.length}</span>
+          <span className="bg-primary/10 text-primary rounded-md px-2.5 py-0.5 text-xs font-semibold tabular-nums">{tickets.length}</span>
         ) : null}
       </div>
 

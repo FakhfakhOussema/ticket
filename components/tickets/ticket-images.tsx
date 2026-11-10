@@ -102,7 +102,7 @@ export function TicketImages({ ticketId, initialImages }: Props) {
       <div className="mb-3 flex items-center justify-between gap-3">
         <h2 id="images-title" className="flex items-center gap-2 text-sm font-semibold">
           Images
-          <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium tabular-nums">{images.length}</span>
+          <span className="bg-muted text-muted-foreground rounded-md px-2 py-0.5 text-xs font-medium tabular-nums">{images.length}</span>
         </h2>
         <input
           ref={inputRef}

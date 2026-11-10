@@ -76,7 +76,7 @@ export function GlobalSearch() {
       >
         <Search className="size-4" aria-hidden />
         <span className="flex-1 text-left">Rechercher un ticket…</span>
-        <kbd className="bg-muted text-muted-foreground rounded border px-1.5 text-[10px] font-medium">Ctrl K</kbd>
+        <kbd className="bg-muted text-muted-foreground rounded-md border px-1.5 text-[10px] font-medium">Ctrl K</kbd>
       </Button>
       <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)} aria-label="Rechercher un ticket">
         <Search className="size-4" />
@@ -103,7 +103,7 @@ export function GlobalSearch() {
                 <CommandGroup heading="Tickets">
                   {results.map((r) => (
                     <CommandItem key={r.id} value={r.id} onSelect={() => go(r)} className="gap-3">
-                      <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: r.project?.color }} aria-hidden />
+                      <span className="size-2.5 shrink-0 rounded-md" style={{ backgroundColor: r.project?.color }} aria-hidden />
                       <span className="min-w-0 flex-1 truncate">{r.title}</span>
                       <span className="text-muted-foreground hidden truncate text-xs sm:block">{r.project?.name}</span>
                       <StatusBadge status={r.status} />

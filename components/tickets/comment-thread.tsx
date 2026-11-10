@@ -85,7 +85,7 @@ export function CommentThread({ ticketId, initialComments, members, currentUser,
     <section aria-labelledby="comments-title" className="grid gap-4">
       <h2 id="comments-title" className="flex items-center gap-2 font-semibold">
         <MessageSquare className="size-4" aria-hidden /> Commentaires
-        <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium tabular-nums">{comments.length}</span>
+        <span className="bg-muted text-muted-foreground rounded-md px-2 py-0.5 text-xs font-medium tabular-nums">{comments.length}</span>
       </h2>
 
       {comments.length === 0 ? (

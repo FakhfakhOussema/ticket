@@ -45,14 +45,14 @@ export function PendingInvitations({ invitations }: { invitations: ProjectInvita
     <section aria-labelledby="pending-title" className="mt-8">
       <h2 id="pending-title" className="mb-3 flex items-center gap-2 font-semibold">
         Invitations en attente
-        <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium tabular-nums">{invitations.length}</span>
+        <span className="bg-muted text-muted-foreground rounded-md px-2 py-0.5 text-xs font-medium tabular-nums">{invitations.length}</span>
       </h2>
       <ul className="bg-card divide-y overflow-hidden rounded-2xl border shadow-xs">
         {invitations.map((inv) => {
           const expired = new Date(inv.expires_at) <= new Date();
           return (
             <li key={inv.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-              <span className="bg-muted text-muted-foreground flex size-9 shrink-0 items-center justify-center rounded-full">
+              <span className="bg-muted text-muted-foreground flex size-9 shrink-0 items-center justify-center rounded-md">
                 <Mail className="size-4" aria-hidden />
               </span>
               <div className="min-w-0 flex-1 basis-56">

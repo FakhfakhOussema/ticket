@@ -39,7 +39,7 @@ export function AppSidebar({ projects, onNavigate }: { projects: SidebarProject[
           <BrandLogo className="h-12" />
           <span className="grid leading-tight">
             <span className="text-base font-semibold tracking-tight whitespace-nowrap">Ticket</span>
-            <span className="mt-0.5 w-fit rounded-full bg-amber-100 px-1.5 py-px text-[10px] font-semibold tracking-wide whitespace-nowrap text-amber-800 uppercase dark:bg-amber-500/20 dark:text-amber-300">
+            <span className="mt-0.5 w-fit rounded-md bg-amber-100 px-1.5 py-px text-[10px] font-semibold tracking-wide whitespace-nowrap text-amber-800 uppercase dark:bg-amber-500/20 dark:text-amber-300">
               Version test
             </span>
           </span>

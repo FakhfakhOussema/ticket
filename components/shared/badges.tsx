@@ -3,13 +3,13 @@ import { PRIORITY_STYLES, STATUS_STYLES } from "@/lib/ticket-ui";
 import { cn } from "@/lib/utils";
 import type { ProjectRole, TicketPriority, TicketStatus } from "@/types";
 
-const base = "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap";
+const base = "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium whitespace-nowrap";
 
 export function StatusBadge({ status, className }: { status: TicketStatus; className?: string }) {
   const s = STATUS_STYLES[status];
   return (
     <span className={cn(base, s.badge, className)}>
-      <span className={cn("size-1.5 rounded-full", s.dot)} aria-hidden />
+      <span className={cn("size-1.5 rounded-md", s.dot)} aria-hidden />
       {STATUS_LABELS[status]}
     </span>
   );

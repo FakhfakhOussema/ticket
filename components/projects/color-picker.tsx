@@ -36,7 +36,7 @@ export function ColorPicker({ value, onChange }: Props) {
             title={COLOR_NAMES[color] ?? color}
             onClick={() => onChange(color)}
             className={cn(
-              "flex size-8 items-center justify-center rounded-full ring-offset-2 ring-offset-background transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+              "flex size-8 items-center justify-center rounded-md ring-offset-2 ring-offset-background transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
               selected ? "ring-2 ring-foreground/70" : "hover:scale-110",
             )}
             style={{ backgroundColor: color }}

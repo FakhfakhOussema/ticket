@@ -179,13 +179,13 @@ function TicketRow({ ticket, onNavigate }: { ticket: AssignedTicketItem; onNavig
           <span className="text-muted-foreground flex flex-wrap items-center gap-x-2 text-xs">
             <span className="truncate">{ticket.project?.name ?? "Projet"}</span>
             <span className="flex items-center gap-1">
-              <span className={cn("size-1.5 rounded-full", STATUS_STYLES[ticket.status].dot)} aria-hidden />
+              <span className={cn("size-1.5 rounded-md", STATUS_STYLES[ticket.status].dot)} aria-hidden />
               {STATUS_LABELS[ticket.status]}
             </span>
             <DueLabel due={ticket.due_date} late={late} />
           </span>
         </span>
-        <span className="bg-background text-muted-foreground rounded px-1.5 py-0.5 text-[10px] font-medium uppercase">Ticket</span>
+        <span className="bg-background text-muted-foreground rounded-md px-1.5 py-0.5 text-[10px] font-medium uppercase">Ticket</span>
       </Link>
     </li>
   );
@@ -205,7 +205,7 @@ function TodoRowView({ todo, onToggle, onRemove }: { todo: TodoRow; onToggle: (t
         aria-checked={todo.done}
         aria-label={todo.done ? `Rouvrir « ${todo.title} »` : `Terminer « ${todo.title} »`}
         onClick={() => onToggle(todo, !todo.done)}
-        className="focus-visible:ring-ring flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition outline-none focus-visible:ring-2"
+        className="focus-visible:ring-ring flex size-5 shrink-0 items-center justify-center rounded-md border-2 transition outline-none focus-visible:ring-2"
         style={{ borderColor: color, backgroundColor: todo.done ? color : "transparent" }}
       >
         {todo.done ? <Check className="size-3 text-white" aria-hidden /> : null}
@@ -254,7 +254,7 @@ function AddTodoForm({ projects, compact, onCreated }: { projects: SidebarProjec
     });
   };
 
-  const swatch = (color: string) => <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: color }} aria-hidden />;
+  const swatch = (color: string) => <span className="size-2.5 shrink-0 rounded-md" style={{ backgroundColor: color }} aria-hidden />;
 
   return (
     <form

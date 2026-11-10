@@ -46,12 +46,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-24 -right-24 size-96 rounded-full bg-white/10 blur-3xl"
+          className="pointer-events-none absolute -top-32 -right-32 size-[32rem] bg-[radial-gradient(closest-side,rgba(255,255,255,0.18),transparent)]"
         />
-        <div aria-hidden className="pointer-events-none absolute -bottom-32 -left-16 size-96 rounded-full bg-violet-400/20 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-40 -left-24 size-[32rem] bg-[radial-gradient(closest-side,rgba(167,139,250,0.28),transparent)]" />
 
         <div className="relative">
-          <span className="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-medium tracking-wide uppercase backdrop-blur">
+          <span className="inline-flex rounded-md bg-white/15 px-3 py-1 text-xs font-medium tracking-wide uppercase backdrop-blur">
             Version test
           </span>
           <h2 className="mt-6 max-w-md text-4xl leading-tight font-semibold tracking-tight">

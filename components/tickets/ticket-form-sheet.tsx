@@ -173,7 +173,7 @@ export function TicketFormSheet({ open, onOpenChange, projectId, members, ticket
                         type="button"
                         onClick={() => removeImage(img.url)}
                         aria-label={`Retirer l'image ${i + 1}`}
-                        className="absolute top-0.5 right-0.5 flex size-5 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                        className="absolute top-0.5 right-0.5 flex size-5 items-center justify-center rounded-md bg-black/60 text-white hover:bg-black/80"
                       >
                         <X className="size-3" />
                       </button>

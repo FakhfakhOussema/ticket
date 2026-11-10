@@ -112,7 +112,7 @@ export function AppHeader({ user, projects, todos, onOpenMenu }: Props) {
             </DropdownMenuGroup>
             {projects.map((p) => (
               <DropdownMenuItem key={p.id} render={<Link href={`/projets/${p.id}/tickets?nouveau=1`} />}>
-                <span className="size-2.5 rounded-full" style={{ backgroundColor: p.color }} aria-hidden />
+                <span className="size-2.5 rounded-md" style={{ backgroundColor: p.color }} aria-hidden />
                 <span className="truncate">{p.name}</span>
               </DropdownMenuItem>
             ))}
