@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { AuthError } from "@supabase/supabase-js";
-import { SITE_URL, SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/env";
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/env";
 import { getRequestOrigin } from "@/lib/request-origin";
 import { safeNext } from "@/lib/safe-redirect";
 import { createClient } from "@/lib/supabase/server";
@@ -67,7 +67,7 @@ export async function signUp(input: RegisterInput, next?: string): Promise<Actio
     password,
     options: {
       data: { full_name },
-      emailRedirectTo: `${SITE_URL()}/auth/callback?next=${encodeURIComponent(target)}`,
+      emailRedirectTo: `${await getRequestOrigin()}/auth/callback?next=${encodeURIComponent(target)}`,
     },
   });
   if (error) return { ok: false, error: authErrorMessage(error) };
@@ -89,7 +89,7 @@ export async function requestPasswordReset(input: ForgotPasswordInput): Promise<
 
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: `${SITE_URL()}/auth/callback?next=${encodeURIComponent("/reinitialiser-mot-de-passe")}`,
+    redirectTo: `${await getRequestOrigin()}/auth/callback?next=${encodeURIComponent("/reinitialiser-mot-de-passe")}`,
   });
 
   // Erreurs de limite d'envoi signalées ; toute autre issue donne le même message

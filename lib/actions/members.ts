@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireUser } from "@/lib/auth";
 import { dbErrorMessage, UUID_RE } from "@/lib/db-error";
-import { SITE_URL } from "@/lib/env";
+import { getRequestOrigin } from "@/lib/request-origin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { inviteSchema, memberRoleSchema, type InviteInput } from "@/lib/validations/member";
@@ -12,7 +12,8 @@ import type { ProjectRole } from "@/types";
 
 type InviteData = { link: string; emailSent: boolean };
 
-const invitationLink = (token: string) => `${SITE_URL()}/invitations/${token}`;
+// Origine de la requête en cours (et non NEXT_PUBLIC_SITE_URL, parfois restée sur localhost en production).
+const invitationLink = (origin: string, token: string) => `${origin}/invitations/${token}`;
 
 /**
  * Envoie l'email d'invitation via Supabase Auth (clé service role, serveur uniquement).
@@ -21,10 +22,10 @@ const invitationLink = (token: string) => `${SITE_URL()}/invitations/${token}`;
  */
 type SendResult = { status: "sent" } | { status: "existing" } | { status: "error"; error: string };
 
-async function sendInviteEmail(email: string, token: string, projectName: string): Promise<SendResult> {
+async function sendInviteEmail(email: string, link: string, projectName: string): Promise<SendResult> {
   const admin = createAdminClient();
   const { error } = await admin.auth.admin.inviteUserByEmail(email, {
-    redirectTo: invitationLink(token),
+    redirectTo: link,
     data: { needs_password: true, invited_to: projectName },
   });
 
@@ -72,14 +73,14 @@ export async function inviteMember(projectId: string, input: InviteInput): Promi
     return { ok: false, error: dbErrorMessage(error, "Impossible de créer l'invitation.") };
   }
 
-  const mail = await sendInviteEmail(email, invitation.token, project.name);
+  const link = invitationLink(await getRequestOrigin(), invitation.token);
+  const mail = await sendInviteEmail(email, link, project.name);
   if (mail.status === "error") {
     await supabase.from("project_invitations").delete().eq("id", invitation.id);
     return { ok: false, error: mail.error };
   }
 
   revalidatePath(`/projets/${projectId}/membres`);
-  const link = invitationLink(invitation.token);
   return mail.status === "sent"
     ? { ok: true, message: "Invitation envoyée", data: { link, emailSent: true } }
     : {
@@ -109,11 +110,11 @@ export async function resendInvitation(invitationId: string): Promise<ActionResu
     .update({ expires_at: new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString() })
     .eq("id", invitation.id);
 
-  const mail = await sendInviteEmail(invitation.email, invitation.token, invitation.project?.name ?? "");
+  const link = invitationLink(await getRequestOrigin(), invitation.token);
+  const mail = await sendInviteEmail(invitation.email, link, invitation.project?.name ?? "");
   if (mail.status === "error") return { ok: false, error: mail.error };
 
   revalidatePath(`/projets/${invitation.project_id}/membres`);
-  const link = invitationLink(invitation.token);
   return mail.status === "sent"
     ? { ok: true, message: "Invitation renvoyée", data: { link, emailSent: true } }
     : {

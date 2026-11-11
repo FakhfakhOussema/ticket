@@ -12,5 +12,9 @@ export const SUPABASE_URL = () =>
   required("NEXT_PUBLIC_SUPABASE_URL", process.env.NEXT_PUBLIC_SUPABASE_URL);
 export const SUPABASE_ANON_KEY = () =>
   required("NEXT_PUBLIC_SUPABASE_ANON_KEY", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-export const SITE_URL = () =>
-  (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+// Repli : domaine de production fourni automatiquement par Vercel si NEXT_PUBLIC_SITE_URL n'est pas définie.
+export const SITE_URL = () => {
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  const fallback = vercel ? `https://${vercel}` : "http://localhost:3000";
+  return (process.env.NEXT_PUBLIC_SITE_URL || fallback).replace(/\/$/, "");
+};
