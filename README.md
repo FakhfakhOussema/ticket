@@ -51,6 +51,7 @@ Les migrations sont dans [`supabase/migrations/`](supabase/migrations/) et doive
 | `…0004_rpc.sql` | RPC : `get_project_dashboard`, `accept_invitation`, `decline_invitation`, `get_invitation_by_token`, `my_pending_invitations` |
 | `…0005_realtime.sql` | Tables ajoutées à la publication `supabase_realtime` |
 | `…0006_notes_and_todos.sql` | Notes de projet (`project_notes`) et liste de tâches personnelle (`user_todos`), avec RLS |
+| `…0007_all_users_all_projects.sql` | Tous les inscrits sont membres de tous les projets (rattrapage + triggers) : projets visibles par tous, assignation possible à n'importe quel inscrit |
 
 **Option A — SQL Editor (le plus simple)** : ouvrez *SQL Editor* dans Supabase, collez et exécutez chaque fichier dans l'ordre.
 
@@ -68,7 +69,7 @@ npm run db:types   # nécessite `supabase link`
 
 ### Règles de sécurité (RLS)
 
-- Un utilisateur ne voit que les projets dont il est membre, ainsi que leurs tickets, commentaires et membres.
+- Un utilisateur ne voit que les projets dont il est membre, ainsi que leurs tickets, commentaires et membres. Depuis la migration `…0007`, chaque inscrit est automatiquement membre de **tous** les projets (donc tout le monde voit tout).
 - Seuls `owner` / `admin` peuvent inviter et gérer les membres ; seul le `owner` modifie ou supprime le projet.
 - Tout membre peut créer et modifier des tickets ; la suppression est réservée au créateur et aux `owner` / `admin`.
 - L'assigné d'un ticket doit être membre du projet ; le `owner` ne peut être ni retiré ni rétrogradé.

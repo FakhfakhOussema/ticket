@@ -21,7 +21,7 @@ export default async function MembersPage({ params }: PageProps<"/projets/[id]/m
     <>
       <PageHeader
         title="Membres"
-        description={`${members.length} membre${members.length > 1 ? "s" : ""} dans ce projet.`}
+        description={`${members.length} utilisateur${members.length > 1 ? "s" : ""} inscrit${members.length > 1 ? "s" : ""} : tous peuvent se voir assigner des tâches.`}
         actions={canManage ? <InviteDialog projectId={id} /> : null}
       />
       {!canManage ? (
