@@ -1,8 +1,10 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { AuthError } from "@supabase/supabase-js";
 import { SITE_URL, SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/env";
+import { getRequestOrigin } from "@/lib/request-origin";
 import { safeNext } from "@/lib/safe-redirect";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -152,11 +154,16 @@ export async function signInWithGoogle(next?: string): Promise<ActionResult> {
     };
   }
 
+  // La page de destination est gardée dans un cookie : l'URL de retour reste ainsi « nue »
+  // (/auth/callback), ce qui évite qu'une liste « Redirect URLs » stricte la refuse.
+  (await cookies()).set("pilotis_next", safeNext(next), { httpOnly: true, sameSite: "lax", maxAge: 600, path: "/" });
+
+  const origin = await getRequestOrigin();
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${SITE_URL()}/auth/callback?next=${encodeURIComponent(safeNext(next))}`,
+      redirectTo: `${origin}/auth/callback`,
       // Laisse l'utilisateur choisir son compte Google à chaque fois
       queryParams: { prompt: "select_account" },
     },

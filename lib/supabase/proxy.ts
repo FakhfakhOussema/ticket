@@ -16,6 +16,22 @@ function isPublic(pathname: string) {
 
 /** Rafraîchit la session Supabase et protège les routes privées. */
 export async function updateSession(request: NextRequest) {
+  // Si Supabase ne peut pas utiliser notre URL de retour exacte (liste « Redirect URLs » stricte), il renvoie
+  // le code OAuth sur la Site URL (souvent « / »). On le réachemine vers /auth/callback au lieu de le perdre.
+  const params = request.nextUrl.searchParams;
+  if (!request.nextUrl.pathname.startsWith("/auth/")) {
+    if (params.has("code")) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/callback";
+      return NextResponse.redirect(url);
+    }
+    if (request.nextUrl.pathname === "/" && (params.has("error_description") || params.get("error") === "access_denied")) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/callback";
+      return NextResponse.redirect(url);
+    }
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient<Database>(SUPABASE_URL(), SUPABASE_ANON_KEY(), {

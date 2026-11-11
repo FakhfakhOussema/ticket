@@ -22,6 +22,7 @@ export default async function LoginPage({
       : errorCode === "lien_invalide"
         ? "Ce lien est invalide ou a expiré. Reconnectez-vous ou refaites une demande."
         : undefined;
+  const detail = typeof params.detail === "string" ? params.detail.slice(0, 160) : undefined;
   const registerHref = next ? `/inscription?next=${encodeURIComponent(next)}` : "/inscription";
 
   return (
@@ -34,6 +35,7 @@ export default async function LoginPage({
         {errorMessage ? (
           <p role="alert" className="bg-destructive/10 text-destructive rounded-lg px-3 py-2 text-sm">
             {errorMessage}
+            {errorCode === "google" && detail ? <span className="mt-1 block text-xs opacity-80">Détail : {detail}</span> : null}
           </p>
         ) : null}
         <GoogleButton next={next} />

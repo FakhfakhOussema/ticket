@@ -138,7 +138,12 @@ Le bouton « Continuer avec Google » est présent sur les pages de connexion et
    (visible dans Supabase → *Authentication → Providers → Google*, champ « Callback URL »).
 3. Copiez le **Client ID** et le **Client secret** générés.
 4. Supabase → *Authentication → Providers → **Google*** : activez le fournisseur, collez le Client ID et le Client secret, enregistrez.
-5. Vérifiez *Authentication → URL Configuration* : la **Site URL** et les **Redirect URLs** (`http://localhost:3000/**`, `https://<votre-domaine>/**`) doivent être renseignées.
+5. Vérifiez *Authentication → URL Configuration* (**indispensable**, c'est la cause n° 1 d'une connexion Google qui n'aboutit pas) :
+   - **Site URL** : `http://localhost:3000` (puis l'URL de production)
+   - **Redirect URLs** : ajoutez `http://localhost:3000/**` **et** `http://localhost:3000/auth/callback` (idem avec `https://<votre-domaine>`). Si l'application tourne sur un autre port, ajoutez-le aussi.
+   Si l'adresse de retour n'est pas autorisée, Supabase renvoie le code Google sur la Site URL : l'application le réachemine automatiquement, mais l'adresse doit tout de même correspondre à l'hôte et au port utilisés.
+
+Si la connexion échoue, la page de connexion affiche « Détail : … » avec la raison technique renvoyée par Supabase.
 
 Fonctionnement : le compte et son profil sont créés automatiquement à la première connexion (nom et photo repris de Google). Si une adresse email existe déjà, Supabase relie le compte Google au compte existant. Une invitation de projet s'accepte avec le compte Google correspondant à l'adresse invitée.
 
