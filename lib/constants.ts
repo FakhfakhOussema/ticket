@@ -1,6 +1,10 @@
 import type { InvitationStatus, ProjectRole, TicketPriority, TicketStatus } from "@/types";
 
-export const TICKET_STATUSES = ["todo", "in_progress", "in_review", "done"] as const satisfies readonly TicketStatus[];
+export const TICKET_STATUSES = ["todo", "in_progress", "in_review", "done", "closed"] as const satisfies readonly TicketStatus[];
+
+/** Statuts « finis » : jamais en retard, exclus des tâches à faire et des tickets ouverts. */
+export const FINISHED_STATUSES = ["done", "closed"] as const satisfies readonly TicketStatus[];
+export const isFinishedStatus = (status: TicketStatus) => (FINISHED_STATUSES as readonly TicketStatus[]).includes(status);
 export const TICKET_PRIORITIES = ["low", "medium", "high", "urgent"] as const satisfies readonly TicketPriority[];
 export const PROJECT_ROLES = ["owner", "admin", "member"] as const satisfies readonly ProjectRole[];
 
@@ -9,6 +13,7 @@ export const STATUS_LABELS: Record<TicketStatus, string> = {
   in_progress: "En cours",
   in_review: "En revue",
   done: "Terminé",
+  closed: "Fermé",
 };
 
 export const PRIORITY_LABELS: Record<TicketPriority, string> = {

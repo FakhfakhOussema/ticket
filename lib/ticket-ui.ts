@@ -1,7 +1,7 @@
 import { AlertTriangle, ArrowDown, ArrowUp, Equal, type LucideIcon } from "lucide-react";
 import type { TicketPriority, TicketStatus } from "@/types";
 
-/** Statuts : À faire = gris, En cours = bleu, En revue = orange, Terminé = vert. */
+/** Statuts : À faire = gris, En cours = bleu, En revue = orange, Terminé = vert, Fermé = gris foncé (discret). */
 export const STATUS_STYLES: Record<TicketStatus, { badge: string; dot: string; chart: string }> = {
   todo: {
     badge: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
@@ -22,6 +22,11 @@ export const STATUS_STYLES: Record<TicketStatus, { badge: string; dot: string; c
     badge: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300",
     dot: "bg-emerald-500",
     chart: "#10b981",
+  },
+  closed: {
+    badge: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
+    dot: "bg-zinc-500",
+    chart: "#52525b",
   },
 };
 
@@ -51,7 +56,7 @@ export const PRIORITY_STYLES: Record<TicketPriority, { badge: string; icon: Luci
 
 /** Ordre de tri des priorités (urgente d'abord). */
 export const PRIORITY_RANK: Record<TicketPriority, number> = { urgent: 0, high: 1, medium: 2, low: 3 };
-export const STATUS_RANK: Record<TicketStatus, number> = { todo: 0, in_progress: 1, in_review: 2, done: 3 };
+export const STATUS_RANK: Record<TicketStatus, number> = { todo: 0, in_progress: 1, in_review: 2, done: 3, closed: 4 };
 
 /** Palette de couleurs de projet. */
 export const PROJECT_COLORS = [

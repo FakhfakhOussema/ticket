@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { notFound } from "next/navigation";
+import { isFinishedStatus } from "@/lib/constants";
 import { UUID_RE } from "@/lib/db-error";
 import { requireUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -44,7 +45,8 @@ export async function getProjectsOverview(): Promise<ProjectOverview[]> {
   return projects.map((p) => {
     const projectMembers = (members ?? []).filter((m) => m.project_id === p.id);
     const projectTickets = (tickets ?? []).filter((t) => t.project_id === p.id);
-    const done = projectTickets.filter((t) => t.status === "done").length;
+    // Un ticket fermé compte comme fini (progression) et n'est plus « ouvert ».
+    const done = projectTickets.filter((t) => isFinishedStatus(t.status)).length;
     return {
       ...p,
       my_role: projectMembers.find((m) => m.user_id === user.id)?.role ?? "member",

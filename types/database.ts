@@ -452,7 +452,7 @@ export type Database = {
       invitation_status: "pending" | "accepted" | "declined" | "revoked" | "expired";
       project_role: "owner" | "admin" | "member";
       ticket_priority: "low" | "medium" | "high" | "urgent";
-      ticket_status: "todo" | "in_progress" | "in_review" | "done";
+      ticket_status: "todo" | "in_progress" | "in_review" | "done" | "closed";
     };
     CompositeTypes: {
       [_ in never]: never;

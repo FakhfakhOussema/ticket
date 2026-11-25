@@ -29,7 +29,9 @@ export function KpiCards({ kpi }: { kpi: ProjectDashboard["kpi"] }) {
     {
       label: "Terminés",
       value: kpi.done,
-      hint: kpi.total ? `${Math.round((kpi.done / kpi.total) * 100)} % du total` : "Aucun ticket",
+      hint: kpi.total
+        ? `${Math.round((kpi.done / kpi.total) * 100)} % du total${kpi.closed ? ` · ${kpi.closed} fermé${kpi.closed > 1 ? "s" : ""}` : ""}`
+        : "Aucun ticket",
       icon: CheckCircle2,
       tone: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300",
     },

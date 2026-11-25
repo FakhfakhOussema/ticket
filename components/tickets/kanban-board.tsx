@@ -15,7 +15,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Plus } from "lucide-react";
+import { ChevronsLeft, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { TicketCard } from "@/components/tickets/ticket-card";
 import { Button } from "@/components/ui/button";
@@ -26,8 +26,11 @@ import type { TicketStatus, TicketWithPeople } from "@/types";
 
 type Columns = Record<TicketStatus, string[]>;
 
+/** Colonne discrète, repliée par défaut. */
+const COLLAPSIBLE_STATUS: TicketStatus = "closed";
+
 function group(tickets: TicketWithPeople[]): Columns {
-  const cols: Columns = { todo: [], in_progress: [], in_review: [], done: [] };
+  const cols: Columns = { todo: [], in_progress: [], in_review: [], done: [], closed: [] };
   [...tickets]
     .sort((a, b) => a.position - b.position || a.created_at.localeCompare(b.created_at))
     .forEach((t) => cols[t.status].push(t.id));
@@ -49,6 +52,31 @@ function SortableCard({ ticket, projectId, onAssignSelf }: { ticket: TicketWithP
   );
 }
 
+/** Colonne « Fermé » repliée : bande étroite et discrète, qui accepte quand même le dépôt d'un ticket. */
+function CollapsedColumn({ status, count, onExpand }: { status: TicketStatus; count: number; onExpand: () => void }) {
+  const { setNodeRef, isOver } = useDroppable({ id: status });
+  return (
+    <button
+      ref={setNodeRef}
+      type="button"
+      onClick={onExpand}
+      aria-expanded={false}
+      aria-label={`Afficher la colonne « ${STATUS_LABELS[status]} » (${count})`}
+      title={`Afficher « ${STATUS_LABELS[status]} »`}
+      className={cn(
+        "text-muted-foreground hover:bg-muted/60 hover:text-foreground flex w-11 shrink-0 flex-col items-center gap-3 rounded-2xl border border-dashed py-3 transition-colors",
+        "focus-visible:ring-ring outline-none focus-visible:ring-2",
+        isOver && "bg-primary/5 ring-primary/30 text-foreground ring-2 ring-inset",
+      )}
+    >
+      <ChevronsLeft className="size-4 rotate-180" aria-hidden />
+      <span className={cn("size-2 rounded-md opacity-70", STATUS_STYLES[status].dot)} aria-hidden />
+      <span className="text-xs font-medium tabular-nums">{count}</span>
+      <span className="text-xs font-medium tracking-wide [writing-mode:vertical-rl]">{STATUS_LABELS[status]}</span>
+    </button>
+  );
+}
+
 function Column({
   status,
   ids,
@@ -56,6 +84,7 @@ function Column({
   projectId,
   onCreate,
   onAssignSelf,
+  onCollapse,
 }: {
   status: TicketStatus;
   ids: string[];
@@ -63,26 +92,42 @@ function Column({
   projectId: string;
   onCreate: (status: TicketStatus) => void;
   onAssignSelf?: (ticket: TicketWithPeople) => void;
+  /** Présent pour une colonne repliable (« Fermé ») : affichage atténué + bouton pour replier. */
+  onCollapse?: () => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   const style = STATUS_STYLES[status];
+  const muted = !!onCollapse;
 
   return (
     <section
       aria-label={`${STATUS_LABELS[status]} (${ids.length})`}
-      className="bg-muted/60 flex w-72 shrink-0 flex-col rounded-2xl p-2 xl:w-auto xl:min-w-0 xl:flex-1"
+      className={cn(
+        "flex w-72 shrink-0 flex-col rounded-2xl p-2 xl:w-auto xl:min-w-0 xl:flex-1",
+        muted ? "border border-dashed bg-transparent" : "bg-muted/60",
+      )}
     >
-      <header className="flex items-center gap-2 px-2 py-1.5">
+      <header className={cn("flex items-center gap-2 px-2 py-1.5", muted && "text-muted-foreground")}>
         <span className={cn("size-2.5 rounded-md", style.dot)} aria-hidden />
         <h3 className="text-sm font-semibold">{STATUS_LABELS[status]}</h3>
         <span className="bg-background text-muted-foreground rounded-md px-2 py-0.5 text-xs font-medium tabular-nums">{ids.length}</span>
-        <Button variant="ghost" size="icon-sm" className="ml-auto" onClick={() => onCreate(status)} aria-label={`Ajouter un ticket « ${STATUS_LABELS[status]} »`}>
-          <Plus className="size-4" />
-        </Button>
+        {onCollapse ? (
+          <Button variant="ghost" size="icon-sm" className="ml-auto" onClick={onCollapse} aria-expanded aria-label={`Masquer la colonne « ${STATUS_LABELS[status]} »`}>
+            <ChevronsLeft className="size-4" />
+          </Button>
+        ) : (
+          <Button variant="ghost" size="icon-sm" className="ml-auto" onClick={() => onCreate(status)} aria-label={`Ajouter un ticket « ${STATUS_LABELS[status]} »`}>
+            <Plus className="size-4" />
+          </Button>
+        )}
       </header>
       <div
         ref={setNodeRef}
-        className={cn("flex min-h-24 flex-1 flex-col gap-2 rounded-xl p-1 transition-colors", isOver && "bg-primary/5 ring-primary/30 ring-2 ring-inset")}
+        className={cn(
+          "flex min-h-24 flex-1 flex-col gap-2 rounded-xl p-1 transition-colors",
+          muted && "opacity-60 transition-opacity hover:opacity-100",
+          isOver && "bg-primary/5 ring-primary/30 ring-2 ring-inset",
+        )}
       >
         <SortableContext items={ids} strategy={verticalListSortingStrategy}>
           {ids.map((id) => {
@@ -110,6 +155,8 @@ export function KanbanBoard({ tickets, projectId, onMove, onCreate, onAssignSelf
   const byId = useMemo(() => new Map(tickets.map((t) => [t.id, t])), [tickets]);
   const [items, setItems] = useState<Columns>(() => group(tickets));
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [closedOpen, setClosedOpen] = useState(false);
+  const isCollapsed = (status: TicketStatus) => status === COLLAPSIBLE_STATUS && !closedOpen;
 
   // Resynchronise les colonnes quand les tickets changent (hors glisser-déposer en cours).
   const [prevTickets, setPrevTickets] = useState(tickets);
@@ -138,7 +185,8 @@ export function KanbanBoard({ tickets, projectId, onMove, onCreate, onAssignSelf
     const overKey = String(over.id);
     const from = findContainer(activeKey);
     const to = findContainer(overKey);
-    if (!from || !to || from === to) return;
+    // Colonne repliée : on ne déplace pas la carte pendant le survol, le dépôt est traité dans onDragEnd.
+    if (!from || !to || from === to || isCollapsed(to)) return;
 
     setItems((prev) => {
       const toList = prev[to];
@@ -163,11 +211,27 @@ export function KanbanBoard({ tickets, projectId, onMove, onCreate, onAssignSelf
       return;
     }
 
+    const overKey = String(over.id);
+
+    // Dépôt sur la colonne repliée : le ticket va à la fin de cette colonne.
+    if (findContainer(overKey) === COLLAPSIBLE_STATUS && isCollapsed(COLLAPSIBLE_STATUS)) {
+      const target = COLLAPSIBLE_STATUS;
+      const from = findContainer(activeKey);
+      const last = items[target].filter((id) => id !== activeKey).at(-1);
+      const lastPos = last ? byId.get(last)?.position : undefined;
+      setItems((prev) => ({
+        ...prev,
+        ...(from && from !== target ? { [from]: prev[from].filter((id) => id !== activeKey) } : {}),
+        [target]: [...prev[target].filter((id) => id !== activeKey), activeKey],
+      }));
+      if (ticket.status !== target) onMove(activeKey, target, lastPos !== undefined ? lastPos + 1024 : 1024);
+      return;
+    }
+
     const container = findContainer(activeKey);
     if (!container) return;
 
     let list = items[container];
-    const overKey = String(over.id);
     const oldIndex = list.indexOf(activeKey);
     const newIndex = list.indexOf(overKey);
     if (newIndex >= 0 && oldIndex !== newIndex) {
@@ -201,9 +265,22 @@ export function KanbanBoard({ tickets, projectId, onMove, onCreate, onAssignSelf
       }}
     >
       <div className="relative -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6 xl:mx-0 xl:px-0">
-        {TICKET_STATUSES.map((status) => (
-          <Column key={status} status={status} ids={items[status]} byId={byId} projectId={projectId} onCreate={onCreate} onAssignSelf={onAssignSelf} />
-        ))}
+        {TICKET_STATUSES.map((status) =>
+          isCollapsed(status) ? (
+            <CollapsedColumn key={status} status={status} count={items[status].length} onExpand={() => setClosedOpen(true)} />
+          ) : (
+            <Column
+              key={status}
+              status={status}
+              ids={items[status]}
+              byId={byId}
+              projectId={projectId}
+              onCreate={onCreate}
+              onAssignSelf={onAssignSelf}
+              onCollapse={status === COLLAPSIBLE_STATUS ? () => setClosedOpen(false) : undefined}
+            />
+          ),
+        )}
       </div>
       <DragOverlay>{active ? <TicketCard ticket={active} projectId={projectId} overlay /> : null}</DragOverlay>
     </DndContext>

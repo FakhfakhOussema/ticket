@@ -1,5 +1,6 @@
 import { format, formatDistanceToNow, isValid, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
+import { isFinishedStatus } from "@/lib/constants";
 import type { TicketStatus } from "@/types";
 
 type Namable = { full_name?: string | null; email?: string | null };
@@ -64,7 +65,7 @@ export function todayISO(): string {
 }
 
 export function isOverdue(dueDate: string | null | undefined, status: TicketStatus): boolean {
-  return !!dueDate && status !== "done" && dueDate < todayISO();
+  return !!dueDate && !isFinishedStatus(status) && dueDate < todayISO();
 }
 
 export function toDateOnly(date: Date): string {

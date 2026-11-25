@@ -43,7 +43,7 @@ export async function getTodoData(userId: string): Promise<TodoData> {
       .from("tickets")
       .select(`id, title, due_date, status, priority, project_id, ${PROJECT_EMBED}`)
       .eq("assignee_id", userId)
-      .neq("status", "done")
+      .not("status", "in", "(done,closed)")
       .order("due_date", { ascending: true, nullsFirst: false })
       .order("created_at", { ascending: false })
       .limit(50),

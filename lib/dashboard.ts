@@ -12,6 +12,7 @@ export type ChartRow = {
   in_progress: number;
   in_review: number;
   done: number;
+  closed: number;
   percentage: number;
 };
 
@@ -34,6 +35,7 @@ export function buildChartRows(dashboard: ProjectDashboard, members: MemberWithP
     in_progress: a.in_progress,
     in_review: a.in_review,
     done: a.done,
+    closed: a.closed ?? 0,
     percentage: Number(a.percentage),
   }));
 
@@ -41,7 +43,7 @@ export function buildChartRows(dashboard: ProjectDashboard, members: MemberWithP
   const overflow = rows.filter((r) => r.user_id && r.color === OTHERS_COLOR);
   if (overflow.length <= 1) return rows;
   const kept = rows.filter((r) => !overflow.includes(r));
-  const sum = (k: "total" | "todo" | "in_progress" | "in_review" | "done" | "percentage") =>
+  const sum = (k: "total" | "todo" | "in_progress" | "in_review" | "done" | "closed" | "percentage") =>
     overflow.reduce((acc, r) => acc + r[k], 0);
   kept.push({
     key: "others",
@@ -54,6 +56,7 @@ export function buildChartRows(dashboard: ProjectDashboard, members: MemberWithP
     in_progress: sum("in_progress"),
     in_review: sum("in_review"),
     done: sum("done"),
+    closed: sum("closed"),
     percentage: Math.round(sum("percentage") * 10) / 10,
   });
   return kept;

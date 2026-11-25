@@ -63,7 +63,7 @@ export async function getDashboard(projectId: string): Promise<ProjectDashboard>
   return data as unknown as ProjectDashboard;
 }
 
-/** Tickets non terminés assignés à l'utilisateur, triés par échéance (sans échéance en dernier). */
+/** Tickets non terminés ni fermés assignés à l'utilisateur, triés par échéance (sans échéance en dernier). */
 export async function getMyTasks(projectId: string, userId: string): Promise<TicketWithPeople[]> {
   const supabase = await createClient();
   const { data } = await supabase
@@ -71,7 +71,7 @@ export async function getMyTasks(projectId: string, userId: string): Promise<Tic
     .select(TICKET_SELECT)
     .eq("project_id", projectId)
     .eq("assignee_id", userId)
-    .neq("status", "done")
+    .not("status", "in", "(done,closed)")
     .order("due_date", { ascending: true, nullsFirst: false })
     .order("created_at", { ascending: false })
     .limit(20);

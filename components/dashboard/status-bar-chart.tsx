@@ -56,7 +56,7 @@ export function StatusBarChart({ rows }: { rows: ChartRow[] }) {
             style={{ height }}
             role="img"
             aria-label={`Tickets par statut et par membre : ${rows
-              .map((r) => `${r.name} ${r.todo} à faire, ${r.in_progress} en cours, ${r.in_review} en revue, ${r.done} terminés`)
+              .map((r) => `${r.name} ${r.todo} à faire, ${r.in_progress} en cours, ${r.in_review} en revue, ${r.done} terminés, ${r.closed} fermés`)
               .join(" ; ")}`}
           >
             <ResponsiveContainer width="100%" height="100%" minWidth={0}>

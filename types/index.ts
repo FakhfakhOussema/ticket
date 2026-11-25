@@ -34,6 +34,7 @@ export type ProjectDashboard = {
     in_progress: number;
     in_review: number;
     done: number;
+    closed: number;
     overdue: number;
     unassigned: number;
   };
@@ -47,6 +48,7 @@ export type ProjectDashboard = {
     in_progress: number;
     in_review: number;
     done: number;
+    closed: number;
     percentage: number;
   }>;
 };
