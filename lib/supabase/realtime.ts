@@ -9,7 +9,11 @@ import type { Database } from "@/types/database";
  * (le client utiliserait la clé publique, rôle `anon`). On attend donc la session avant de s'abonner.
  * Retourne la fonction de désabonnement, à renvoyer depuis un `useEffect`.
  */
-export function subscribeAuthenticated(configure: (supabase: SupabaseClient<Database>) => RealtimeChannel): () => void {
+export function subscribeAuthenticated(
+  configure: (supabase: SupabaseClient<Database>) => RealtimeChannel,
+  /** Appelé quand le canal est connecté (et à chaque reconnexion) : ex. publier sa présence. */
+  onSubscribed?: (channel: RealtimeChannel) => void,
+): () => void {
   const supabase = createClient();
   let channel: RealtimeChannel | undefined;
   let cancelled = false;
@@ -17,7 +21,10 @@ export function subscribeAuthenticated(configure: (supabase: SupabaseClient<Data
   void supabase.auth.getSession().then(({ data }) => {
     if (cancelled) return;
     if (data.session) supabase.realtime.setAuth(data.session.access_token);
-    channel = configure(supabase).subscribe();
+    const ch = configure(supabase);
+    channel = ch.subscribe((status) => {
+      if (status === "SUBSCRIBED" && !cancelled) onSubscribed?.(ch);
+    });
   });
 
   return () => {

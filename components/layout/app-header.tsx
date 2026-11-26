@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { Fragment } from "react";
 import { GlobalSearch } from "@/components/layout/global-search";
+import { OnlineUsers } from "@/components/layout/online-users";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -87,6 +88,8 @@ export function AppHeader({ user, projects, todos, onOpenMenu }: Props) {
           })}
         </ol>
       </nav>
+
+      <OnlineUsers user={user} projects={projects} />
 
       <GlobalSearch />
 

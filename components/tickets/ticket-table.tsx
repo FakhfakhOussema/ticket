@@ -128,7 +128,12 @@ export function TicketTable({ tickets, projectId, onEdit, onDelete, onAssignSelf
                   {t.due_date ? formatDate(t.due_date) : "—"}
                   {late ? <span className="sr-only"> (en retard)</span> : null}
                 </TableCell>
-                <TableCell className="text-muted-foreground hidden whitespace-nowrap lg:table-cell">{timeAgo(t.updated_at)}</TableCell>
+                <TableCell className="text-muted-foreground hidden whitespace-nowrap lg:table-cell">
+                  {timeAgo(t.updated_at)}
+                  <span className="block text-xs">
+                    {t.updated_by ? `par ${displayName(t.updater)}` : `créé par ${displayName(t.creator)}`}
+                  </span>
+                </TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" aria-label={`Actions pour « ${t.title} »`} />}>

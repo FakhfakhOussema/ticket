@@ -57,7 +57,7 @@ export function TicketDetail({ projectId, initialTicket, comments, images, membe
           }
           const row = payload.new as Ticket;
           const find = (id: string | null) => membersRef.current.find((m) => m.id === id) ?? null;
-          setTicket({ ...row, assignee: find(row.assignee_id), creator: find(row.created_by) });
+          setTicket({ ...row, assignee: find(row.assignee_id), creator: find(row.created_by), updater: find(row.updated_by) });
         },
       ),
     );
@@ -71,6 +71,8 @@ export function TicketDetail({ projectId, initialTicket, comments, images, membe
       ...changes,
       description: changes.description !== undefined ? changes.description || null : t.description,
       assignee: changes.assignee_id !== undefined ? (members.find((m) => m.id === changes.assignee_id) ?? null) : t.assignee,
+      updated_by: currentUser.id,
+      updater: currentUser,
     }));
     startTransition(async () => {
       const result = await updateTicket(ticket.id, changes);
@@ -167,8 +169,22 @@ export function TicketDetail({ projectId, initialTicket, comments, images, membe
               <dd className="text-foreground">{formatDateTime(ticket.created_at)}</dd>
             </div>
             <div className="flex items-center justify-between gap-2">
-              <dt>Mis à jour</dt>
-              <dd className="text-foreground">{timeAgo(ticket.updated_at)}</dd>
+              <dt>Modifié par</dt>
+              <dd className="text-foreground flex items-center gap-1.5">
+                {ticket.updated_by ? (
+                  <>
+                    <UserAvatar user={ticket.updater} size="sm" /> {displayName(ticket.updater)}
+                  </>
+                ) : (
+                  <span className="text-muted-foreground">Jamais modifié</span>
+                )}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <dt>Modifié</dt>
+              <dd className="text-foreground" title={formatDateTime(ticket.updated_at)}>
+                {timeAgo(ticket.updated_at)}
+              </dd>
             </div>
           </dl>
         </aside>

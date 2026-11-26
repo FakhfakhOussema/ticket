@@ -1,6 +1,8 @@
 "use server";
 
+import { after } from "next/server";
 import { requireUser } from "@/lib/auth";
+import { notifyTicketAssigned } from "@/lib/notifications";
 import { dbErrorMessage, UUID_RE } from "@/lib/db-error";
 import { PROFILE_COLUMNS } from "@/lib/queries/tickets";
 import type { CommentWithAuthor } from "@/lib/queries/tickets";
@@ -20,7 +22,8 @@ import type { TicketStatus, TicketWithPeople } from "@/types";
 
 const TICKET_SELECT = `*,
   assignee:profiles!tickets_assignee_id_fkey(${PROFILE_COLUMNS}),
-  creator:profiles!tickets_created_by_fkey(${PROFILE_COLUMNS})`;
+  creator:profiles!tickets_created_by_fkey(${PROFILE_COLUMNS}),
+  updater:profiles!tickets_updated_by_fkey(${PROFILE_COLUMNS})`;
 
 const firstIssue = (e: { issues: { message: string }[] }) => e.issues[0]?.message ?? "Données invalides.";
 
@@ -47,11 +50,13 @@ export async function createTicket(projectId: string, input: TicketInput): Promi
     .single();
 
   if (error || !data) return { ok: false, error: dbErrorMessage(error, "Impossible de créer le ticket.") };
+  // Email à l'assigné, envoyé après la réponse pour ne pas ralentir l'interface.
+  if (data.assignee_id) after(() => notifyTicketAssigned(data, user.id));
   return { ok: true, message: "Ticket créé", data };
 }
 
 export async function updateTicket(ticketId: string, patch: TicketPatch): Promise<ActionResult<TicketWithPeople>> {
-  await requireUser();
+  const user = await requireUser();
   if (!UUID_RE.test(ticketId)) return { ok: false, error: "Ticket introuvable." };
   const parsed = ticketPatchSchema.safeParse(patch);
   if (!parsed.success) return { ok: false, error: firstIssue(parsed.error) };
@@ -61,10 +66,21 @@ export async function updateTicket(ticketId: string, patch: TicketPatch): Promis
   if (Object.keys(update).length === 0) return { ok: false, error: "Rien à modifier." };
 
   const supabase = await createClient();
+
+  // Assigné avant modification : pour n'envoyer l'email que si l'assignation change réellement.
+  let previousAssignee: string | null | undefined;
+  if (update.assignee_id !== undefined) {
+    const { data: before } = await supabase.from("tickets").select("assignee_id").eq("id", ticketId).maybeSingle();
+    previousAssignee = before?.assignee_id;
+  }
+
   const { data, error } = await supabase.from("tickets").update(update).eq("id", ticketId).select(TICKET_SELECT).maybeSingle();
 
   if (error) return { ok: false, error: dbErrorMessage(error, "Impossible de modifier le ticket.") };
   if (!data) return { ok: false, error: "Ticket introuvable ou droits insuffisants." };
+  if (update.assignee_id !== undefined && data.assignee_id && data.assignee_id !== previousAssignee) {
+    after(() => notifyTicketAssigned(data, user.id));
+  }
   return { ok: true, message: "Ticket mis à jour", data };
 }
 

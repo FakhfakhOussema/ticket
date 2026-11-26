@@ -22,7 +22,7 @@ export function RecentActivity({ projectId, tickets }: { projectId: string; tick
         <ul className="grid gap-1">
           {tickets.map((t) => {
             const created = Math.abs(new Date(t.updated_at).getTime() - new Date(t.created_at).getTime()) < 2000;
-            const actor = created ? t.creator : (t.assignee ?? t.creator);
+            const actor = created ? t.creator : t.updated_by ? t.updater : (t.assignee ?? t.creator);
             return (
               <li key={t.id}>
                 <Link
@@ -33,7 +33,8 @@ export function RecentActivity({ projectId, tickets }: { projectId: string; tick
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{t.title}</p>
                     <p className="text-muted-foreground truncate text-xs">
-                      {created ? `Créé par ${displayName(t.creator)}` : "Modifié"} · {timeAgo(t.updated_at)}
+                      {created ? `Créé par ${displayName(t.creator)}` : t.updated_by ? `Modifié par ${displayName(t.updater)}` : "Modifié"} ·{" "}
+                      {timeAgo(t.updated_at)}
                     </p>
                   </div>
                   <StatusBadge status={t.status} className="hidden sm:inline-flex" />

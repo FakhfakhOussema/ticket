@@ -8,7 +8,8 @@ export const PROFILE_COLUMNS = "id, full_name, email, avatar_url";
 
 const TICKET_SELECT = `*,
   assignee:profiles!tickets_assignee_id_fkey(${PROFILE_COLUMNS}),
-  creator:profiles!tickets_created_by_fkey(${PROFILE_COLUMNS})`;
+  creator:profiles!tickets_created_by_fkey(${PROFILE_COLUMNS}),
+  updater:profiles!tickets_updated_by_fkey(${PROFILE_COLUMNS})`;
 
 export async function getMembers(projectId: string): Promise<MemberWithProfile[]> {
   const supabase = await createClient();

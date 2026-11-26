@@ -176,6 +176,7 @@ export type Database = {
           priority: Database["public"]["Enums"]["ticket_priority"];
           assignee_id: string | null;
           created_by: string | null;
+          updated_by: string | null;
           due_date: string | null;
           position: number;
           created_at: string;
@@ -190,6 +191,7 @@ export type Database = {
           priority?: Database["public"]["Enums"]["ticket_priority"];
           assignee_id?: string | null;
           created_by?: string | null;
+          updated_by?: string | null;
           due_date?: string | null;
           position?: number;
           created_at?: string;
@@ -204,6 +206,7 @@ export type Database = {
           priority?: Database["public"]["Enums"]["ticket_priority"];
           assignee_id?: string | null;
           created_by?: string | null;
+          updated_by?: string | null;
           due_date?: string | null;
           position?: number;
           created_at?: string;
@@ -227,6 +230,13 @@ export type Database = {
           {
             foreignKeyName: "tickets_created_by_fkey";
             columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "tickets_updated_by_fkey";
+            columns: ["updated_by"];
             isOneToOne: false;
             referencedRelation: "profiles";
             referencedColumns: ["id"];

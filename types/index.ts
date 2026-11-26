@@ -20,10 +20,11 @@ export type ProfileSummary = Pick<Profile, "id" | "full_name" | "email" | "avata
 /** Ligne de la liste des membres (project_members + profil). */
 export type MemberWithProfile = ProjectMember & { profile: ProfileSummary };
 
-/** Ticket avec assigné et créateur. */
+/** Ticket avec assigné, créateur et dernier modificateur. */
 export type TicketWithPeople = Ticket & {
   assignee: ProfileSummary | null;
   creator: ProfileSummary | null;
+  updater: ProfileSummary | null;
 };
 
 /** Retour de la RPC get_project_dashboard. */

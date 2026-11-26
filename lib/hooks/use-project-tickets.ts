@@ -25,7 +25,7 @@ export function useProjectTickets(projectId: string, initial: TicketWithPeople[]
   useEffect(() => {
     const hydrate = (row: Ticket): TicketWithPeople => {
       const find = (id: string | null) => membersRef.current.find((m) => m.id === id) ?? null;
-      return { ...row, assignee: find(row.assignee_id), creator: find(row.created_by) };
+      return { ...row, assignee: find(row.assignee_id), creator: find(row.created_by), updater: find(row.updated_by) };
     };
 
     return subscribeAuthenticated((supabase) =>
